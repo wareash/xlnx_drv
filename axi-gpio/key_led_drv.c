@@ -48,7 +48,7 @@ static void interrupt_clear(void)
         u32 val;
         val = *(gpkey + GPIO_ISR);
         printk("GPIO_ISR clear before %d\n",val);
-		*(gpkey + GPIO_ISR) = val & IRQ_MASK;
+	*(gpkey + GPIO_ISR) = val & IRQ_MASK;
         printk("after GPIO_ISR clear = %lu\n",*(gpkey + GPIO_ISR));
 }
 /*
@@ -56,7 +56,7 @@ static void interrupt_clear(void)
   */
 static irqreturn_t buttons_irq(int irq, void *dev_id)
 {
-    key_val = 0xff;
+	key_val = 0xff;
 	
 	/*读取按键值*/	
 	key_val = *(gpkey)|key_val ;
@@ -78,7 +78,7 @@ static irqreturn_t buttons_irq(int irq, void *dev_id)
 	interrupt_clear();
 
 	ev_press = 1;                  /* 表示中断发生了 */
-    wake_up_interruptible(&button_waitq);   /* 唤醒休眠的进程 */
+	wake_up_interruptible(&button_waitq);   /* 唤醒休眠的进程 */
 
 	
 	return IRQ_RETVAL(IRQ_HANDLED);
@@ -86,18 +86,17 @@ static irqreturn_t buttons_irq(int irq, void *dev_id)
 
 static void interrupt_enable(void)
 {
-    //from stand alone program
-    //XGpio_InterruptEnable(&Gpio, BUTTON_INTERRUPT);
-    //XGpio_InterruptGlobalEnable(&Gpio);
-    u32 val;
+	//from stand alone program
+	//XGpio_InterruptEnable(&Gpio, BUTTON_INTERRUPT);
+	//XGpio_InterruptGlobalEnable(&Gpio);
+	u32 val;
 
-    val = *(gpkey+GPIO_IER);
-    printk("debug1 GPIO_IER val = %d\n",val);
-
+	val = *(gpkey+GPIO_IER);
+	printk("debug1 GPIO_IER val = %d\n",val);
 	*(gpkey+GPIO_IER) = val | IRQ_MASK;
 
-    *(gpkey + GPIO_GIER) = XGPIO_GIE_GINTR_ENABLE_MASK;	
-    printk("debug2 read  GPIO_IER val = %lu\n",*(gpkey+GPIO_IER));
+	*(gpkey + GPIO_GIER) = XGPIO_GIE_GINTR_ENABLE_MASK;	
+	printk("debug2 read  GPIO_IER val = %lu\n",*(gpkey+GPIO_IER));
 }
 
 static int key_led_drv_open(struct inode *inode, struct file *file)
@@ -109,8 +108,8 @@ static int key_led_drv_open(struct inode *inode, struct file *file)
 	/*AXI-GPIO初始化*/
 	*(gpkey+GPIO_CHAN1_TSR) = (1<<0) | (1<<1);
 	*(gpled+GPIO_CHAN1_TSR) = (0<<0) | (0<<1);
-    printk("debug0 read  GPIO_CHAN1_TSR val = %lu\n",*(gpkey+GPIO_CHAN1_TSR));
-    printk("debug0 read  gpkey = %lu\n",*(gpkey));
+	printk("debug0 read  GPIO_CHAN1_TSR val = %lu\n",*(gpkey+GPIO_CHAN1_TSR));
+    	printk("debug0 read  gpkey = %lu\n",*(gpkey));
 	
 	interrupt_enable();
 
@@ -152,8 +151,8 @@ int key_led_drv_close(struct inode *inode, struct file *file)
 
 
 static struct file_operations key_led_drv_fops = {
-    .owner   =  THIS_MODULE,    /* 这是一个宏，推向编译模块时自动创建的__this_module变量 */
-    .open    =  key_led_drv_open,     
+    	.owner   =  THIS_MODULE,    /* 这是一个宏，推向编译模块时自动创建的__this_module变量 */
+    	.open    =  key_led_drv_open,     
 	.read	 =	key_led_drv_read,	   
 	.release =  key_led_drv_close,	   
 };
